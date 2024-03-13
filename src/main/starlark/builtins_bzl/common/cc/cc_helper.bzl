@@ -938,6 +938,18 @@ def _get_expanded_env(ctx, additional_make_variable_substitutions):
         )
     return expanded_env
 
+def _get_includes(ctx):
+    if not hasattr(ctx.attr, "includes"):
+        fail("could not find rule attribute named: 'includes'")
+
+    attribute_includes = ctx.attr.includes
+    expanded_includes = []
+
+    for include in attribute_includes:
+        expanded_includes.append(_expand(ctx, include, {}))
+
+    return expanded_includes
+
 def _has_target_constraints(ctx, constraints):
     # Constraints is a label_list.
     for constraint in constraints:
@@ -1234,6 +1246,7 @@ cc_helper = struct(
     get_cc_flags_make_variable = _get_cc_flags_make_variable,
     get_copts = _get_copts,
     get_expanded_env = _get_expanded_env,
+    get_includes = _get_includes,
     has_target_constraints = _has_target_constraints,
     is_non_empty_list_or_select = _is_non_empty_list_or_select,
     expand_make_variables_for_copts = _expand_make_variables_for_copts,
